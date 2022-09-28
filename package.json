@@ -1,6 +1,7 @@
 {
   "name": "host",
   "version": "1.0.0",
+  "homepage": "https://mathysjtaljaard.github.io/micro-front-host",
   "scripts": {
     "build": "webpack --mode production --env production",
     "build:dev": "webpack --mode development",
