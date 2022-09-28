@@ -5,9 +5,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: ["!gh-branches", master, "feature/*", "bugfix/*", "hotfix/*"]
+    branches: ["!gh-branches", main, "feature/*", "bugfix/*", "hotfix/*"]
   pull_request:
-    branches: [master]
+    branches: [main]
 
 jobs:
   build-test:
@@ -15,21 +15,22 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [17.x]
+        node-version: [16.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
       - run: npm ci
       - run: npm run build --if-present
       - name: Deploy
+        # https://github.com/peaceiris/actions-github-pages
         uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
+          publish_dir: ./dist
