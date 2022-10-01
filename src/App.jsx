@@ -1,35 +1,46 @@
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
-import { useStore, StoreProvider } from "store/store";
 import ErrorBoundary from "./ErrorBoundary"
-import RemoteHeader from "header/Header"
-import RemoteDashboard from "dashboard/Dashboard"
+
+const RemoteHeader = React.lazy(
+  () => import("header/Header")
+);
+
+const RemoteDashboard = React.lazy(
+  () => import("dashboard/Dashboard")
+);
+
+const { useStore, StoreProvider } = import("store/store")
 
 import "./index.css";
 
 const App = () => {
-  const [store, dispatch] = useStore();
-
-  return (
-    <div>
-      <p><b>Host App</b></p>
-      <p>The app will not work without a store</p>
-      <ErrorBoundary>
-        <RemoteHeader count={store.count}></RemoteHeader>
-      </ErrorBoundary>
-      <ErrorBoundary>
-        <RemoteDashboard dispatch={dispatch}/>
-      </ErrorBoundary>
-      <footer>
-        <p>Host Footer</p>
-        <button onClick={() => {dispatch({type: "decrement"})}}>Decrement</button>
-      </footer>
-    </div>
-  )
+  console.log(typeof useStore)
+  try {
+    const [store, dispatch] = useStore()
+    return (
+      <Suspense fallback={<h1>Loading Content</h1>}>
+        <StoreProvider>
+          <div>
+            <p><b>Host App</b></p>
+            <p>The app will not work without a store</p>
+            <ErrorBoundary>
+              <RemoteHeader count={store.count}></RemoteHeader>
+            </ErrorBoundary>
+            <ErrorBoundary>
+              <RemoteDashboard dispatch={dispatch} />
+            </ErrorBoundary>
+            <footer>
+              <p>Host Footer</p>
+              <button onClick={() => { dispatch({ type: "decrement" }) }}>Decrement</button>
+            </footer>
+          </div>
+        </StoreProvider>
+      </Suspense>
+    )
+  } catch (error) {
+    return <h1>Unable to load content</h1>
+  }
 }
 ReactDOM.render(
-  <Suspense fallback={<div>Loading...</div>}>
-    <StoreProvider>
-      <App></App>
-    </StoreProvider>
-  </Suspense>, document.getElementById("app"));
+  <App />, document.getElementById("app"));

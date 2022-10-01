@@ -9,7 +9,7 @@ module.exports = (env) => {
   const { production } = env
   console.log({ production })
   const remotes = production ? require("./remotes").production : require("./remotes").local
-  const publicPath = production ? "https://mathysjtaljaard.github.io/micro-front-host/" : "http://localhost:5500/";
+  const publicPath = production ? "https://mathysjtaljaard.github.io/micro-front-host" : "http://localhost:3000/";
 
   console.table(remotes)
   console.log(publicPath)
@@ -23,6 +23,9 @@ module.exports = (env) => {
     },
 
     devServer: {
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      },
       port: 3000,
       historyApiFallback: true,
     },
