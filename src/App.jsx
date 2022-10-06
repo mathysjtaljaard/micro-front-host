@@ -15,7 +15,6 @@ const { useStore, StoreProvider } = import("store/store")
 import "./index.css";
 
 const App = () => {
-  console.log(typeof useStore)
   try {
     const [store, dispatch] = useStore()
     return (
