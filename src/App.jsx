@@ -38,6 +38,7 @@ const App = () => {
       </Suspense>
     )
   } catch (error) {
+    console.log({ error })
     return <h1>Unable to load content</h1>
   }
 }
